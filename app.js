@@ -84,5 +84,5 @@ app.get('/success', (req, res) => {
 app.get('/cancel', (req, res) => res.send('Cancelled'));
 
 app.listen(process.env.PORT || 3000, function () { 
-    console.log("SERVER STARTED PORT: 3000"); 
+    console.log("SERVER STARTED POR2T: 3000"); 
 });
