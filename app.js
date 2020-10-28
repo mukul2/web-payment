@@ -136,6 +136,17 @@ app.get('/success', (req, res) => {
         }).catch(error => {
         console.error(error)})        
 
+      }else  if(serviceName == "Follow up Video Call"){
+        
+        axios.post('http://iosapp.abettahealth.com/api/add_video_appointment_info', {
+        patient_id: userid,doctor_id:docid,amount:amount,payment_details:paymentId,status:1,payment_status:1,is_review_appointment:is_review_appointment}).then(res => {
+        console.log(`statusCode: ${res.statusCode}`)
+        console.log(res)
+        res.send(JSON.stringify(payment));
+
+        }).catch(error => {
+        console.error(error)})        
+
       }
 
 
