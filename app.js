@@ -11,12 +11,14 @@ paypal.configure({
 const app = express();
  
 var  amount = 220;
-var  serviceName ="No Service Name Here";
+var  serviceName ="No Service Name Here ";
 var userid = 1;
 var docid = 1;
 var nom = 1;
 var starts = "";
 var ends = "";
+var is_review_appointment = "";
+
 
 app.set('view engine', 'ejs');
 
@@ -29,6 +31,8 @@ app.get('/', (req, res) =>{
   nom = req.query.nom;
   starts = req.query.starts;
   ends = req.query.ends;
+  is_review_appointment = req.query.is_review_appointment;
+
 
    res.render('index')} );
 app.get('/second', (req, res) => res.render('index2'));
@@ -118,6 +122,15 @@ app.get('/success', (req, res) => {
         
         axios.post('http://iosapp.abettahealth.com/api/add_subscription_info', {
         patient_id: userid,dr_id:docid,amount:amount,payment_details:paymentId,status:1}).then(res => {
+        console.log(`statusCode: ${res.statusCode}`)
+        console.log(res)
+        }).catch(error => {
+        console.error(error)})        
+
+      }else  if(serviceName == "Video Call"){
+        
+        axios.post('http://iosapp.abettahealth.com/api/add_video_appointment_info', {
+        patient_id: userid,doctor_id:docid,amount:amount,payment_details:paymentId,status:1,payment_status:1,is_review_appointment:is_review_appointment}).then(res => {
         console.log(`statusCode: ${res.statusCode}`)
         console.log(res)
         }).catch(error => {
