@@ -108,7 +108,7 @@ app.get('/success', (req, res) => {
       }else  if(serviceName == "Month Subscription"){
         
         axios.post('http://iosapp.abettahealth.com/api/add_subscription_info', {
-        patient_id: userid,dr_id:docid,amount:amount,payment_status:1,number_of_months:3,reason:serviceName,payment_details:paymentId,starts:starts,ends:ends,status:1}).then(res => {
+        patient_id: userid,dr_id:docid,amount:amount,payment_status:1,number_of_months:nom,reason:serviceName,payment_details:paymentId,starts:starts,ends:ends,status:1}).then(res => {
         console.log(`statusCode: ${res.statusCode}`)
         console.log(res)
         }).catch(error => {
