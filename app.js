@@ -11,7 +11,7 @@ paypal.configure({
 const app = express();
  
 var  amount = 220;
-var  serviceName ="No Service Name";
+var  serviceName ="No Service Name Here";
 var userid = 1;
 var docid = 1;
 var nom = 1;
