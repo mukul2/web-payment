@@ -1,7 +1,7 @@
 const express = require('express');
 const ejs = require('ejs');
 const paypal = require('paypal-rest-sdk');
-
+const axios = require('axios')
 paypal.configure({
   'mode': 'sandbox', //sandbox or live
   'client_id': 'AbZcTBiyddfmw5Cnh6oTKaURCmALlmN18LsGxz4WDZY6714koqcQNfJ2Qm-AIQNhWk-TjqstCTHpBQXD',
@@ -9,11 +9,29 @@ paypal.configure({
 });
 
 const app = express();
+ 
+var  amount = 0;
+var  serviceName ="No Service Name";
+var userid = 1;
+var docid = 1;
+var nom = 1;
+var starts = "";
+var ends = "";
 
 app.set('view engine', 'ejs');
 
-app.get('/', (req, res) => res.render('index'));
+app.get('/', (req, res) =>{
 
+  amount = req.query.amount;
+  serviceName = req.query.service;
+  userid = req.query.userid;
+  docid = req.query.docid;
+  nom = req.query.nom;
+  starts = req.query.starts;
+  ends = req.query.ends;
+
+   res.render('index')} );
+app.get('/second', (req, res) => res.render('index2'));
 app.post('/pay', (req, res) => {
   const create_payment_json = {
     "intent": "sale",
@@ -27,18 +45,18 @@ app.post('/pay', (req, res) => {
     "transactions": [{
         "item_list": {
             "items": [{
-                "name": "Red Sox Hat",
+                "name": serviceName,
                 "sku": "001",
-                "price": "25.00",
+                "price": amount,
                 "currency": "USD",
                 "quantity": 1
             }]
         },
         "amount": {
             "currency": "USD",
-            "total": "25.00"
+            "total":amount
         },
-        "description": "Hat for the best team ever"
+        "description": serviceName
     }]
 };
 
@@ -65,7 +83,7 @@ app.get('/success', (req, res) => {
     "transactions": [{
         "amount": {
             "currency": "USD",
-            "total": "25.00"
+            "total": amount
         }
     }]
   };
@@ -77,11 +95,39 @@ app.get('/success', (req, res) => {
     } else {
         console.log(JSON.stringify(payment));
         res.send(JSON.stringify(payment));
+
+        if(serviceName == "Prescription Service"){
+
+        axios.post('http://iosapp.abettahealth.com/api/add_payment_info_only', {
+        patient_id: userid,dr_id:docid,amount:amount,status:1,reason:serviceName,transID:paymentId}).then(res => {
+        console.log(`statusCode: ${res.statusCode}`)
+        console.log(res)
+        }).catch(error => {
+        console.error(error)})
+
+      }else  if(serviceName == "Month Subscription"){
+        
+        axios.post('http://iosapp.abettahealth.com/api/add_subscription_info', {
+        patient_id: userid,dr_id:docid,amount:amount,payment_status:1,number_of_month:nom,reason:serviceName,payment_details:paymentId,starts:starts,ends:ends,status:1}).then(res => {
+        console.log(`statusCode: ${res.statusCode}`)
+        console.log(res)
+        }).catch(error => {
+        console.error(error)})        
+
+      }
+
+
     }
 });
 });
 
-app.get('/cancel', (req, res) => res.send('Cancelled'));
+
+
+
+
+
+
+app.get('/cancel', (req, res) => res.send('Cancelled by mkl'));
 
 app.listen(process.env.PORT || 3000, function () { 
     console.log("SERVER STARTED POR2T: 3000"); 
